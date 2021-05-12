@@ -13,6 +13,21 @@ public class PlayerMovement : MonoBehaviour {
 
     public float speedIncreasePerPoint = 0.1f;
 
+    public Vector3 jump;
+    public float jumpForce = 2.4f;
+    public bool isGrounded;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        jump = new Vector3(0.0f, 2.0f, 0.0f);
+    }
+
+    void OnCollisionStay()
+    {
+        isGrounded = true;
+    }
+
     private void FixedUpdate ()
     {
         if (!alive) return;
@@ -24,6 +39,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private void Update () {
         horizontalInput = Input.GetAxis("Horizontal");
+        if (isGrounded)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(jump * jumpForce, ForceMode.Impulse);
+                isGrounded = false;
+            }
+        }
 
         if (transform.position.y < -5) {
             Die();
